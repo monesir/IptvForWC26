@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <g fill="none" fill-rule="evenodd">
+    <g stroke="rgba(255, 255, 255, 0.025)" stroke-width="1.5">
+      <!-- Outer Hexagon -->
+      <path d="M30 0 L60 15 L60 45 L30 60 L0 45 L0 15 Z" />
+      <!-- Inner Star Geometric Lines -->
+      <path d="M0 15 L30 30 L60 15" />
+      <path d="M0 45 L30 30 L60 45" />
+      <path d="M30 0 L30 60" />
+    </g>
+  </g>
+</svg>

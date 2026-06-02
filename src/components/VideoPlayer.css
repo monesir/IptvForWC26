@@ -1,0 +1,218 @@
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: 50vh;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  margin-bottom: 24px;
+}
+
+.video-wrapper.is-fullscreen {
+  max-height: none;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.video-wrapper.hide-cursor {
+  cursor: none;
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: #000;
+}
+
+.video-placeholder {
+  width: 100%;
+  max-height: 45vh;
+  aspect-ratio: 16 / 9;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  backdrop-filter: blur(5px);
+}
+
+/* Custom Player Overlays */
+.stats-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.stats-overlay.visible {
+  opacity: 1;
+}
+
+.player-controls-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.player-controls-overlay.visible {
+  opacity: 1;
+}
+
+.controls-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.controls-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  gap: 20px;
+}
+
+.control-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: transform 0.2s, color 0.2s;
+  opacity: 0.85;
+}
+
+.control-btn:hover {
+  transform: scale(1.1);
+  opacity: 1;
+  color: var(--accent-color);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* Volume Slider */
+.volume-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 32px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.volume-container:hover {
+  width: 130px;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.volume-container:hover .volume-slider {
+  opacity: 1;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  background: var(--accent-color);
+  transform: scale(1.2);
+}
+
+/* Live Button */
+.live-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  padding: 4px 8px;
+}
+
+.live-btn:hover {
+  opacity: 1;
+}
+
+.live-dot {
+  font-size: 14px;
+}
+
+.live-btn.is-live .live-dot {
+  color: #ff0000;
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+
+.live-btn.delayed {
+  color: #aaa;
+}
+
+.live-btn.delayed .live-dot {
+  color: #888;
+}
+
+.live-btn.delayed:hover {
+  color: #fff;
+}

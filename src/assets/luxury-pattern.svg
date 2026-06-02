@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <g fill="none" stroke="rgba(212, 175, 55, 0.15)" stroke-width="1.5">
+    <!-- Diamond grid -->
+    <path d="M0,30 L30,0 L60,30 L30,60 Z" />
+    
+    <!-- Center circle -->
+    <circle cx="30" cy="30" r="7" />
+    
+    <!-- Inner cross -->
+    <path d="M30,23 L30,37 M23,30 L37,30" stroke-width="1.5" />
+  </g>
+</svg>

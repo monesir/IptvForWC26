@@ -1,0 +1,98 @@
+.settings-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 0;
+}
+
+.settings-page h2 {
+  font-size: 2rem;
+  margin-bottom: 32px;
+  color: var(--accent-color);
+}
+
+.settings-card {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.settings-card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.settings-card p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.input-group input[type="text"] {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  direction: ltr;
+}
+
+.input-group input[type="text"]:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.xtream-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.xtream-form input {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  direction: ltr;
+}
+
+.xtream-form input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.input-group button,
+.file-upload-btn {
+  background-color: var(--accent-color);
+  color: #0F2424;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: inline-block;
+}
+
+.input-group button:hover,
+.file-upload-btn:hover {
+  opacity: 0.8;
+}
