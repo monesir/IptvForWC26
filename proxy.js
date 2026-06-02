@@ -1,9 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import http from 'http';
+import https from 'https';
 
 const app = express();
 app.use(cors());
+
+// Keep-Alive Agents for ultra-fast chunk fetching
+const httpAgent = new http.Agent({ keepAlive: true, maxSockets: 50 });
+const httpsAgent = new https.Agent({ keepAlive: true, maxSockets: 50 });
 
 app.get('/proxy', (req, res) => {
   const targetUrl = req.query.url;
@@ -11,18 +16,21 @@ app.get('/proxy', (req, res) => {
 
   try {
     const parsedUrl = new URL(targetUrl);
-    
+    const isHttps = parsedUrl.protocol === 'https:';
+    const requestModule = isHttps ? https : http;
+
     const options = {
       hostname: parsedUrl.hostname,
-      port: parsedUrl.port || 80,
+      port: parsedUrl.port || (isHttps ? 443 : 80),
       path: parsedUrl.pathname + parsedUrl.search,
       method: 'GET',
+      agent: isHttps ? httpsAgent : httpAgent,
       headers: {
         'User-Agent': 'VLC/3.0.16'
       }
     };
 
-    const proxyReq = http.request(options, (proxyRes) => {
+    const proxyReq = requestModule.request(options, (proxyRes) => {
       // Forward headers
       for (const [key, value] of Object.entries(proxyRes.headers)) {
         if (key.toLowerCase() === 'location') {
@@ -68,6 +76,31 @@ app.get('/proxy', (req, res) => {
   } catch (err) {
     console.error('Invalid URL:', err);
     res.status(400).send('Invalid URL');
+  }
+});
+
+app.get('/preconnect', (req, res) => {
+  const targetUrl = req.query.url;
+  if (!targetUrl) return res.send('No url');
+  try {
+    const parsedUrl = new URL(targetUrl);
+    const isHttps = parsedUrl.protocol === 'https:';
+    const requestModule = isHttps ? https : http;
+    const options = {
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port || (isHttps ? 443 : 80),
+      path: '/',
+      method: 'HEAD',
+      agent: isHttps ? httpsAgent : httpAgent,
+      headers: { 'User-Agent': 'VLC/3.0.16' }
+    };
+    const preq = requestModule.request(options, (pres) => {
+      res.send('Preconnected');
+    });
+    preq.on('error', () => res.send('Error'));
+    preq.end();
+  } catch (err) {
+    res.send('Invalid');
   }
 });
 

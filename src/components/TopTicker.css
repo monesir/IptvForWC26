@@ -1,0 +1,40 @@
+.topbar-ticker-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-static-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.ticker-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.ticker-abbr {
+  font-family: sans-serif;
+  color: #fff;
+}
+
+.ticker-score {
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.ticker-time {
+  color: #ff4444; /* Red time as requested */
+  font-size: 0.95rem;
+  margin: 0 4px;
+}

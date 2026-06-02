@@ -10,10 +10,7 @@
   position: relative;
 }
 
-.topbar::after {
-  content: "";
-  flex: 1;
-}
+
 
 .topbar-logo {
   display: flex;
@@ -70,4 +67,12 @@
 
 .topbar-search input:focus {
   border-color: rgba(255, 255, 255, 0.3);
+}
+
+
+.topbar-right-area {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
