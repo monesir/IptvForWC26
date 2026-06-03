@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# IPTV Player WC26 🏆📺
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+تطبيق مكتبي متكامل (Desktop Application) لمشاهدة قنوات IPTV ومتابعة أحداث كأس العالم 2026 لحظة بلحظة. تم بناء التطبيق باستخدام أحدث تقنيات الويب **React**، **TypeScript**، **Vite**، و **Electron**.
 
-Currently, two official plugins are available:
+## 🌟 الميزات الرئيسية
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **مشغل بث احترافي**: يدعم تشغيل روابط الـ M3U8 بسلاسة فائقة بفضل مكتبة `hls.js`.
+- **متابعة كأس العالم 2026**:
+  - **شريط أخبار (Ticker)**: يعرض نتائج المباريات الحية في أعلى الشاشة.
+  - **جداول ومجموعات**: استعراض نقاط المنتخبات وترتيبهم في المجموعات (مرتبط بـ ESPN API).
+  - **الأدوار الإقصائية**: شجرة تصفيات وتتبع المباريات بدءاً من دور الـ 32 وحتى النهائي.
+- **تجاوز حماية مزودي الخدمة (Anti-Throttling)**: يقوم التطبيق بإرسال طلبات وهمية لخوادم قياس السرعة لخداع مزودي الخدمة وتجنب خنق سرعة البث (Throttling).
+- **بروكسي مدمج**: يحتوي التطبيق على خادم وكيل (Proxy) محلي مدمج في نواة الـ Electron لكسر حماية القنوات وإخفاء مصدر الطلبات (CORS/Referer/User-Agent).
+- **ميزة صوت الملعب (Karaoke Mode) 🏟️**: تقنية حصرية داخل المشغل تقوم بإلغاء الصوت المركزي (Center Cancellation) لإخفاء أو تخفيف صوت المعلق وإبراز أصوات الجماهير في الملعب بـ 3 مستويات مختلفة.
+- **دعم صورة داخل صورة (PiP)**: مشاهدة المباريات في نافذة صغيرة عائمة أثناء استخدام برامج أخرى.
+- **فلاتر مرئية**: تعديل الألوان، HDR، وتباين الصورة مباشرة من المشغل.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ التقنيات المستخدمة
 
-## Expanding the ESLint configuration
+- **الواجهة الأمامية**: React 19, TypeScript, Vite
+- **النواة والمشغل**: Electron, Node.js, HLS.js
+- **التوجيه (Routing)**: React Router (HashRouter)
+- **الأيقونات**: React Icons
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 كيفية التشغيل وبناء التطبيق
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### المتطلبات الأساسية
+- تثبيت [Node.js](https://nodejs.org/) (الإصدار 18 فما فوق).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### التشغيل في وضع التطوير (Development)
+1. قم بتثبيت الحزم:
+   ```bash
+   npm install
+   ```
+2. قم بتشغيل التطبيق (سيقوم هذا الأمر بتشغيل Vite + Electron + البروكسي المحلي معاً):
+   ```bash
+   npm run dev
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 📦 حزم التطبيق للنشر (Production)
+لإنشاء نسخة محمولة (Portable `.exe`) يمكنك تشغيلها بدون تثبيت على نظام الويندوز:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. قم بتنفيذ الأمر التالي:
+   ```bash
+   npm run pack
+   ```
+2. بعد انتهاء العملية، ستجد الملف التنفيذي `IPTV Player WC26.exe` داخل مجلد:
+   `release/win-unpacked`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+> **ملاحظة**: ملف `config.json` غير مرفوع في هذا المستودع لحماية بيانات الاشتراك، قم بإنشائه محلياً إذا لزم الأمر، أو سيقوم التطبيق بطلبه منك عبر واجهة الإعدادات.
+
+---
+
+## ⚖️ إخلاء مسؤولية
+تم بناء هذا التطبيق لأغراض تعليمية وشخصية لتسهيل واجهة المشاهدة. لا يحتوي التطبيق أو يوزع أي قوائم قنوات أو اشتراكات IPTV. يجب على المستخدمين توفير اشتراكاتهم الخاصة والقانونية.
