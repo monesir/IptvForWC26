@@ -25,6 +25,7 @@ const LiveTV: React.FC<LiveTVProps> = ({ showOnlyFavorites = false }) => {
   const [selectedGroup, setSelectedGroup] = useState<string>(globalSelectedGroup);
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(globalCurrentChannel);
   const [favorites, setFavorites] = useState<Set<string>>(new Set(getFavorites()));
+  const [groupSearchQuery, setGroupSearchQuery] = useState('');
 
   // Sync state to global variables so it persists on unmount
   useEffect(() => {
@@ -113,6 +114,12 @@ const LiveTV: React.FC<LiveTVProps> = ({ showOnlyFavorites = false }) => {
     return Array.from(uniqueGroups).sort();
   }, [displayChannels]);
 
+  const searchedGroups = useMemo(() => {
+    if (!groupSearchQuery.trim()) return groups;
+    const lowerQuery = groupSearchQuery.toLowerCase();
+    return groups.filter(g => g.toLowerCase().includes(lowerQuery));
+  }, [groups, groupSearchQuery]);
+
   useEffect(() => {
     if (groups.length > 0 && !groups.includes(selectedGroup)) {
       setSelectedGroup(groups[0]);
@@ -181,8 +188,17 @@ const LiveTV: React.FC<LiveTVProps> = ({ showOnlyFavorites = false }) => {
     <div className="livetv-container">
       <aside className="groups-sidebar">
         <h3 dir="ltr">Channels ({groups.length})</h3>
+        
+        <input 
+          type="text" 
+          className="group-search-input" 
+          placeholder="البحث في التصنيفات..." 
+          value={groupSearchQuery}
+          onChange={(e) => setGroupSearchQuery(e.target.value)}
+        />
+
         <div className="groups-list">
-          {groups.map((group, index) => (
+          {searchedGroups.map((group, index) => (
             <button 
               key={index} 
               className={`group-btn ${selectedGroup === group ? 'active' : ''}`}
