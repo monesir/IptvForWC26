@@ -1,9 +1,9 @@
 import React from 'react';
-import { useWorldCupMatches } from '../hooks/useWorldCupMatches';
+import { useWorldCup } from '../hooks/WorldCupContext';
 import './TopTicker.css';
 
 const TopTicker: React.FC = () => {
-  const { matches, starredIds } = useWorldCupMatches();
+  const { matches, starredIds } = useWorldCup();
   
   const starredMatches = matches.filter(m => starredIds.includes(m.id));
 

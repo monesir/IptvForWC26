@@ -1,14 +1,40 @@
 {
   "name": "iptv-player",
+  "productName": "IPTV Player WC26",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "مشغل IPTV احترافي لمشاهدة كأس العالم 2026",
   "type": "module",
   "main": "electron/main.js",
   "scripts": {
     "dev": "concurrently -k \"node proxy.js\" \"cross-env NODE_ENV=development vite\" \"wait-on tcp:5199 && cross-env NODE_ENV=development electron .\"",
     "build": "tsc -b && vite build",
+    "pack": "npm run build && electron-builder --win",
     "lint": "eslint .",
     "preview": "vite preview"
+  },
+  "build": {
+    "appId": "com.iptv.player.wc26",
+    "productName": "IPTV Player WC26",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraFiles": [],
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": ["x64"]
+        }
+      ],
+      "signAndEditExecutable": false
+    }
   },
   "dependencies": {
     "cors": "^2.8.6",

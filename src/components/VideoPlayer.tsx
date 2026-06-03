@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 import { FiPlay, FiPause, FiVolume2, FiVolumeX, FiMaximize, FiMinimize, FiActivity, FiSettings, FiMonitor } from 'react-icons/fi';
 import { MdPictureInPictureAlt } from 'react-icons/md';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import './VideoPlayer.css';
 
 interface VideoPlayerProps {
@@ -35,7 +36,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   const [hlsInstance, setHlsInstance] = useState<Hls | null>(null);
   const [retryCounter, setRetryCounter] = useState(0);
   const [isRecovering, setIsRecovering] = useState(false);
-  const [isPip, setIsPip] = useState(false);
+  const [_isPip, setIsPip] = useState(false);
 
   const [latencyProfile, setLatencyProfile] = useState<'stable' | 'balanced' | 'fast' | 'ultra'>(() => {
     return (localStorage.getItem('latency_profile') as any) || 'stable';
@@ -44,7 +45,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<'normal' | 'hdr' | 'shadow' | 'vivid'>('normal');
 
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+  const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     const video = videoRef.current;

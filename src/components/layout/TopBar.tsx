@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiTv, FiFilm, FiSettings, FiStar } from 'react-icons/fi';
+import { FiTv, FiSettings, FiStar } from 'react-icons/fi';
 import TopTicker from '../TopTicker';
 import './TopBar.css';
 

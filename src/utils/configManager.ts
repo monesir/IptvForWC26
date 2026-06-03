@@ -1,7 +1,10 @@
-const fs = window.require('fs');
-const path = window.require('path');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare const process: any;
+const _require = (window as any).require;
+const fs = _require('fs');
+const path = _require('path');
 
-const configPath = path.join(process.cwd(), 'config.json');
+const configPath = path.join(process?.cwd?.() || '.', 'config.json');
 
 export const saveConfig = (key: string, value: string) => {
   try {

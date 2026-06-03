@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useWorldCupMatches } from '../hooks/useWorldCupMatches';
+import { useWorldCup } from '../hooks/WorldCupContext';
 import './WorldCup.css';
 
 const WorldCup: React.FC = () => {
-  const { matches, groups, starredIds, toggleStar, loading } = useWorldCupMatches();
+  const { matches, groups, starredIds, toggleStar, loading } = useWorldCup();
   const [activeTab, setActiveTab] = useState<'matches' | 'groups' | 'knockouts'>('groups');
 
   const getKnockoutRound = (dateStr: string) => {
