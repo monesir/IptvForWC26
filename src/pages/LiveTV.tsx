@@ -4,6 +4,8 @@ import { parseM3U } from '../utils/m3uParser';
 import type { Channel } from '../utils/m3uParser';
 import { loadConfig } from '../utils/configManager';
 import { fetchXtreamCategories, fetchXtreamStreams, buildXtreamStreamUrl } from '../utils/xtreamClient';
+import { FaStar, FaRegStar } from 'react-icons/fa';
+import { getFavorites, toggleFavorite } from '../utils/favoritesManager';
 import './LiveTV.css';
 
 let globalChannelsCache: Channel[] | null = null;
@@ -11,13 +13,18 @@ let globalCacheKey: string = '';
 let globalSelectedGroup: string = '';
 let globalCurrentChannel: Channel | null = null;
 
-const LiveTV: React.FC = () => {
+interface LiveTVProps {
+  showOnlyFavorites?: boolean;
+}
+
+const LiveTV: React.FC<LiveTVProps> = ({ showOnlyFavorites = false }) => {
   const [channels, setChannels] = useState<Channel[]>(globalChannelsCache || []);
   const [loading, setLoading] = useState(!globalChannelsCache);
   const [error, setError] = useState('');
   
   const [selectedGroup, setSelectedGroup] = useState<string>(globalSelectedGroup);
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(globalCurrentChannel);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set(getFavorites()));
 
   // Sync state to global variables so it persists on unmount
   useEffect(() => {
@@ -97,14 +104,24 @@ const LiveTV: React.FC = () => {
     loadChannels();
   }, []);
 
+  const displayChannels = useMemo(() => {
+    return showOnlyFavorites ? channels.filter(c => favorites.has(c.url)) : channels;
+  }, [channels, showOnlyFavorites, favorites]);
+
   const groups = useMemo(() => {
-    const uniqueGroups = new Set(channels.map(c => c.group));
+    const uniqueGroups = new Set(displayChannels.map(c => c.group));
     return Array.from(uniqueGroups).sort();
-  }, [channels]);
+  }, [displayChannels]);
+
+  useEffect(() => {
+    if (groups.length > 0 && !groups.includes(selectedGroup)) {
+      setSelectedGroup(groups[0]);
+    }
+  }, [groups, selectedGroup]);
 
   const filteredChannels = useMemo(() => {
-    return channels.filter(c => c.group === selectedGroup);
-  }, [channels, selectedGroup]);
+    return displayChannels.filter(c => c.group === selectedGroup);
+  }, [displayChannels, selectedGroup]);
 
   // Keyboard navigation for channels
   useEffect(() => {
@@ -138,6 +155,12 @@ const LiveTV: React.FC = () => {
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
   }, [currentChannel, filteredChannels]);
 
+  const handleToggleFavorite = (e: React.MouseEvent, channelUrl: string) => {
+    e.stopPropagation();
+    toggleFavorite(channelUrl);
+    setFavorites(new Set(getFavorites()));
+  };
+
   if (loading) {
     return <div className="status-screen">جاري تحميل القنوات، يرجى الانتظار بصبر...</div>;
   }
@@ -148,6 +171,10 @@ const LiveTV: React.FC = () => {
 
   if (channels.length === 0) {
     return <div className="status-screen">لا يوجد قنوات مسجلة. الرجاء التوجه إلى الإعدادات لإضافة اشتراكك.</div>;
+  }
+
+  if (showOnlyFavorites && displayChannels.length === 0) {
+    return <div className="status-screen">لا يوجد قنوات في المفضلة. قم بالضغط على النجمة ⭐️ في صفحة البث المباشر لإضافة القنوات.</div>;
   }
 
   return (
@@ -192,6 +219,13 @@ const LiveTV: React.FC = () => {
                   ) : (
                     <div className="channel-logo-placeholder">📺</div>
                   )}
+                  <button 
+                    className="favorite-btn"
+                    onClick={(e) => handleToggleFavorite(e, channel.url)}
+                    title="إضافة/إزالة من المفضلة"
+                  >
+                    {favorites.has(channel.url) ? <FaStar color="gold" /> : <FaRegStar color="#ccc" />}
+                  </button>
                 </div>
                 <div className="channel-name">{channel.name}</div>
               </div>

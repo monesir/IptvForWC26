@@ -20,7 +20,7 @@ const App: React.FC = () => {
             <Route index element={<LiveTV />} />
             <Route path="worldcup" element={<WorldCup />} />
             <Route path="series" element={<div><h2>مسلسلات وأفلام</h2></div>} />
-            <Route path="favorites" element={<div><h2>المفضلة</h2></div>} />
+            <Route path="favorites" element={<LiveTV showOnlyFavorites={true} />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
