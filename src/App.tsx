@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import LiveTV from './pages/LiveTV';
 import WorldCup from './pages/WorldCup';
@@ -14,7 +14,7 @@ const App: React.FC = () => {
 
   return (
     <WorldCupProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<LiveTV />} />
@@ -24,7 +24,7 @@ const App: React.FC = () => {
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </WorldCupProvider>
   );
 };
