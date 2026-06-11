@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
-import { FiPlay, FiPause, FiVolume2, FiVolumeX, FiMaximize, FiMinimize, FiActivity, FiSettings, FiMonitor } from 'react-icons/fi';
+import { FiPlay, FiPause, FiVolume2, FiVolumeX, FiMaximize, FiMinimize, FiActivity, FiSettings, FiMonitor, FiHeadphones, FiMicOff } from 'react-icons/fi';
 import { MdPictureInPictureAlt } from 'react-icons/md';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import './VideoPlayer.css';
@@ -43,9 +43,55 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   });
   const [showSettings, setShowSettings] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [showAudioDevices, setShowAudioDevices] = useState(false);
+  const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedAudioDevice, setSelectedAudioDevice] = useState<string>('default');
   const [filterMode, setFilterMode] = useState<'normal' | 'hdr' | 'shadow' | 'vivid'>('normal');
 
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // Fetch audio output devices
+  useEffect(() => {
+    const fetchDevices = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true }); // Request permission first to get labels
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const outputs = devices.filter(d => d.kind === 'audiooutput');
+        setAudioDevices(outputs);
+      } catch (err) {
+        console.warn('Could not fetch audio output devices', err);
+      }
+    };
+    fetchDevices();
+    navigator.mediaDevices.addEventListener('devicechange', fetchDevices);
+    return () => navigator.mediaDevices.removeEventListener('devicechange', fetchDevices);
+  }, []);
+
+  // Change Audio Sink
+  const changeAudioDevice = async (deviceId: string) => {
+    setSelectedAudioDevice(deviceId);
+    setShowAudioDevices(false);
+    
+    // 1. Set Sink ID on Web Audio API Context (since we use it for Stadium/Karaoke mode)
+    if (audioCtxRef.current && typeof (audioCtxRef.current as any).setSinkId === 'function') {
+      try {
+        await (audioCtxRef.current as any).setSinkId(deviceId);
+        console.log('AudioContext sink changed successfully');
+      } catch (error) {
+        console.error('Error setting AudioContext sink', error);
+      }
+    }
+
+    // 2. Set Sink ID on Video Element (fallback)
+    if (videoRef.current && typeof (videoRef.current as any).setSinkId === 'function') {
+      try {
+        await (videoRef.current as any).setSinkId(deviceId);
+        console.log('Video element sink changed successfully');
+      } catch (error) {
+        console.error('Error setting video element sink', error);
+      }
+    }
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -409,7 +455,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
       </div>
 
       {/* Main Overlay */}
-      <div className={`player-controls-overlay ${showControls ? 'visible' : ''}`} onClick={(e) => { e.stopPropagation(); setShowSettings(false); setShowFilters(false); }}>
+      <div className={`player-controls-overlay ${showControls ? 'visible' : ''}`} onClick={(e) => { e.stopPropagation(); setShowSettings(false); setShowFilters(false); setShowAudioDevices(false); }}>
         <div className="controls-gradient"></div>
         <div className="controls-bottom" dir="ltr">
           <button className="control-btn play-btn" onClick={togglePlay}>
@@ -458,13 +504,37 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
             title="صوت الملعب (عزل المعلق)"
             style={{ fontSize: '1rem', marginLeft: '8px', position: 'relative', color: stadiumLevel > 0 ? 'var(--accent-color)' : '#fff' }}
           >
-            🏟️
+            <FiMicOff size={20} />
             {stadiumLevel > 0 && (
               <span style={{ position: 'absolute', top: '-6px', right: '-8px', background: 'var(--accent-color)', color: '#000', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>
                 {stadiumLevel === 1 ? '30%' : stadiumLevel === 2 ? '60%' : '100%'}
               </span>
             )}
           </button>
+
+          <div className="settings-container" onClick={(e) => e.stopPropagation()}>
+            <button className="control-btn" onClick={() => { setShowAudioDevices(!showAudioDevices); setShowSettings(false); setShowFilters(false); }} title="مخرج الصوت">
+              <FiHeadphones size={20} color={selectedAudioDevice !== 'default' ? 'var(--accent-color)' : '#fff'} />
+            </button>
+            {showAudioDevices && (
+              <div className="settings-menu" dir="ltr">
+                <div className="settings-title">Audio Output</div>
+                {audioDevices.length === 0 ? (
+                  <div className="setting-opt" style={{ opacity: 0.5 }}>لا توجد أجهزة...</div>
+                ) : (
+                  audioDevices.map(device => (
+                    <button 
+                      key={device.deviceId} 
+                      className={`setting-opt ${selectedAudioDevice === device.deviceId ? 'active' : ''}`} 
+                      onClick={() => changeAudioDevice(device.deviceId)}
+                    >
+                      {device.label || `Device ${device.deviceId.slice(0, 5)}...`}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="spacer"></div>
 
@@ -477,7 +547,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
           </button>
 
           <div className="settings-container" onClick={(e) => e.stopPropagation()}>
-            <button className="control-btn" onClick={() => { setShowFilters(!showFilters); setShowSettings(false); }} title="فلاتر كأس العالم 2026">
+            <button className="control-btn" onClick={() => { setShowFilters(!showFilters); setShowSettings(false); setShowAudioDevices(false); }} title="فلاتر كأس العالم 2026">
               <FiMonitor size={20} color={filterMode !== 'normal' ? 'var(--accent-color)' : '#fff'} />
             </button>
             {showFilters && (
@@ -492,7 +562,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
           </div>
 
           <div className="settings-container" onClick={(e) => e.stopPropagation()}>
-            <button className="control-btn" onClick={() => { setShowSettings(!showSettings); setShowFilters(false); }}>
+            <button className="control-btn" onClick={() => { setShowSettings(!showSettings); setShowFilters(false); setShowAudioDevices(false); }}>
               <FiSettings size={20} />
             </button>
             {showSettings && (

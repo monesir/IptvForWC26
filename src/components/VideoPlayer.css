@@ -227,8 +227,27 @@
   display: flex;
   flex-direction: column;
   min-width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   animation: slideUp 0.2s ease-out;
+}
+
+.settings-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.settings-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.settings-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .settings-title {
@@ -319,3 +338,7 @@
   box-shadow: 0 0 8px var(--accent-color);
   transform: scale(1.1);
 }
+
+.settings-menu[dir="ltr"] .setting-opt { text-align: left; }
+.settings-menu[dir="ltr"] .settings-title { text-align: left; }
+
