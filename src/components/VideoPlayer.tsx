@@ -49,6 +49,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   const [filterMode, setFilterMode] = useState<'normal' | 'hdr' | 'shadow' | 'vivid'>('normal');
 
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch audio output devices
   useEffect(() => {
@@ -208,6 +209,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
     const onEnterPip = () => setIsPip(true);
     const onLeavePip = () => setIsPip(false);
 
+    const onWaiting = () => {
+      if (stallTimerRef.current) clearTimeout(stallTimerRef.current);
+      stallTimerRef.current = setTimeout(() => {
+        console.log('[Stall Monitor] Stream frozen for 8s, forcing reboot...');
+        setRetryCounter(prev => prev + 1);
+      }, 8000);
+    };
+
+    const onPlaying = () => {
+      if (stallTimerRef.current) {
+        clearTimeout(stallTimerRef.current);
+        stallTimerRef.current = null;
+      }
+    };
+
     const onTimeUpdate = () => {
       if (video.buffered.length > 0) {
         const bufferedEnd = video.buffered.end(video.buffered.length - 1);
@@ -236,6 +252,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
     video.addEventListener('timeupdate', onTimeUpdate);
     video.addEventListener('enterpictureinpicture', onEnterPip);
     video.addEventListener('leavepictureinpicture', onLeavePip);
+    video.addEventListener('waiting', onWaiting);
+    video.addEventListener('playing', onPlaying);
 
     try {
       if (!audioCtxRef.current) {
@@ -295,6 +313,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
       video.removeEventListener('timeupdate', onTimeUpdate);
       video.removeEventListener('enterpictureinpicture', onEnterPip);
       video.removeEventListener('leavepictureinpicture', onLeavePip);
+      video.removeEventListener('waiting', onWaiting);
+      video.removeEventListener('playing', onPlaying);
+      if (stallTimerRef.current) clearTimeout(stallTimerRef.current);
     };
   }, [hlsInstance]);
 
